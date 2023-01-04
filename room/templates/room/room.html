@@ -13,7 +13,14 @@
         <div class="chat-messages space-y-3" id="chat-messages">
             {% for message in messages %}
                 <div class="p-4 bg-gray-200 rounded-xl">
-                    <p class="font-semibold">{{ message.user.username }}</p>
+                <p class="font-semibold">{{ message.user.username }}</p>
+                   {% comment %} {% if message.user.is_online %}
+                         <p class="font-semibold">{{ message.user.username.capitalize }}
+                            <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
+                         </p>
+                    {% else %}
+                        <p class="font-semibold">{{ message.user.username.capitalize }}</p>
+                    {% endif %}{% endcomment %}
                     <p>{{ message.content }}</p>
                 </div>
             {% endfor %}

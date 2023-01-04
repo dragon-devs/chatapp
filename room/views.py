@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+import online_users
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 

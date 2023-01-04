@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 channels = "==3.0.5"
+django-online-users = "*"
 
 [dev-packages]
 
