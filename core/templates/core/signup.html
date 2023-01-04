@@ -3,40 +3,42 @@
 {% block title %}
     Sign up |
 {% endblock %}
-
 {% block content %}
-         <div class="p-10 lg:p20 text-center">
-            <h1 class="text-3xl lg:text-5xl text-white">Sign up</h1>
-        </div>
-    <form action="." method="post" class="lg:w-1/4 px-4 mx-auto">
+    <main class="flex items-center justify-center mt-20 lg:h-screen">
+         <div class=" w-96 p-6 rounded apply-glass">
+            <h1 class="flex items-center justify-center mb-4 h-20 text-3xl font-bold text-gray-100">Sign up</h1>
+
+    <form action="." method="post" class="">
         {% csrf_token %}
         <div class="mb-5">
-            <label for="username" class="text-white">Username</label>
-            <input type="text" name="username" class="w-full mt-2 px-4 py-2 rounded-xl">
+            <label for="username" class="text-gray-100">Username</label>
+            <input type="text" name="username" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
         </div>
           <div class="mb-5">
-            <label for="email" class="text-white">Email</label>
-            <input type="email" name="email" class="w-full mt-2 px-4 py-2 rounded-xl">
+            <label for="email" class="text-gray-100">Email</label>
+            <input type="email" name="email" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
         </div>
          <div class="mb-5">
-                <label for="password1" class="text-white">Password</label>
-                <input type="password" name="password1" class="w-full mt-2 px-4 py-2 rounded-xl">
+                <label for="password1" class="text-gray-100">Password</label>
+                <input type="password" name="password1" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
             </div>
          <div class="mb-5">
-                <label for="password2" class="text-white">Repeat Password</label>
-                <input type="password" name="password2" class="w-full mt-2 px-4 py-2 rounded-xl">
+                <label for="password2" class="text-gray-100">Repeat Password</label>
+                <input type="password" name="password2" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
          </div>
 
         {% if form.errors %}
             {% for field in form %}
                 {% for error in field.errors %}
-                    <div class="mb-5 p-4 rounded-xl bg-red-700 text-white">
+                    <div class="mb-5 p-4 rounded-xl bg-red-800 text-white">
                         <p>{{ error|escape }}</p>
                     </div>
                 {% endfor %}
             {% endfor %}
         {% endif %}
 
-        <button class="px-6 py-3 rounded-xl text-white bg-blue-800 hover:bg-blue-700">Submit</button>
+        <button class="bg-slate-700 w-full text-gray-200 mt-4 mb-4 py-2 rounded hover:bg-slate-800 transition-colors">Submit</button>
     </form>
+         </div>
+    </main>
 {% endblock %}

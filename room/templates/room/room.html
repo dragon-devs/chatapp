@@ -22,7 +22,7 @@
     <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
         <form action="." method="post" class="flex">
             <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input">
-            <button class="px-5 py-3 rounded-xl text-white bg-blue-600 hover:bg-blue-700" id="chat-message-submit">Send</button>
+            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">Send</button>
         </form>
     </div>
 {% endblock %}
@@ -33,7 +33,8 @@
     {{ request.user.username|json_script:"json-username" }}
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
-    const userName = JSON.parse(document.getElementById('json-username').textContent);
+    const userName  -+
+          = JSON.parse(document.getElementById('json-username').textContent);
 
     const chatSocket = new WebSocket(
         'ws://'
