@@ -15,3 +15,4 @@ class RoomAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['content', 'date_added', 'user', 'room']
 
+

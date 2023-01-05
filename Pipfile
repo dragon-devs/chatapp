@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 channels = "==3.0.5"
 django-online-users = "*"
+pillow = "*"
 
 [dev-packages]
 

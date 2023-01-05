@@ -1,7 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
+from django.forms import ModelForm
 from django.core.exceptions import ValidationError
+
+from .models import *
 
 
 class CustomUserCreationForm(forms.Form):
@@ -14,14 +17,14 @@ class CustomUserCreationForm(forms.Form):
         username = self.cleaned_data['username'].lower()
         r = User.objects.filter(username=username)
         if r.count():
-            raise  ValidationError("Username already exists")
+            raise ValidationError("Username already exists")
         return username
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
         r = User.objects.filter(email=email)
         if r.count():
-            raise  ValidationError("Email already exists")
+            raise ValidationError("Email already exists")
         return email
 
     def clean_password2(self):
@@ -40,3 +43,10 @@ class CustomUserCreationForm(forms.Form):
             self.cleaned_data['password1']
         )
         return user
+
+
+class UserProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+        exclude = ['user']

@@ -5,26 +5,76 @@
 {% endblock %}
 
 {% block content %}
-         <h1 class="text-3xl text-center lg:text-5xl mt-5 text-white font-bold">ONLINE USERS</h1>
-         <div class="p-10 lg:p20 mt-5 mx-10 text-center apply-glass" >
-            {% for foo in users_online %}
-                <h2 class="text-2xl lg:text-3xl text-white bg-slate-700 rounded p-3 mb-3">{{ foo.user }}
-                    <span class="inline-flex">
+        {% comment %}<div class="p-8 lg:p10 text-center">
+
+            {% for user in users_online %}
+        <ul >
+        <div class="py-2 px-2 max-w-sm mt-4  bg-white rounded-xl shadow-lg space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-2">
+         <li>
+         <img class="block mx-auto h-24 rounded-full sm:mx-0 sm:shrink-0" src="{{ user.user.profile.profile_pic.url }}" alt="User Profile Picture." >
+        <div class="text-center space-y-2 sm:text-left mx-4">
+             <div class="space-y-0.5 ">
+                    <p class="text-lg text-black font-semibold mt-2">
+                        <a href="#">{{ user.user.username.capitalize }}</a>
+
+                    </p>
+                  <p class="text-slate-500 font-medium">
+                    {{ user.user.profile.bio }}
+                  </p>
+
+            </div>
+        </div>
+      </li>
+      </div>
+   {% endfor %}
+      </ul>
+</div>
+{% endcomment %}
+
+
+    <h1 class="text-3xl text-center lg:text-5xl mt-5 mb-5 text-white font-bold">ONLINE USERS</h1>
+    <ul>
+    {% for foo in users_online %}
+        <li>
+         <div class="mt-4 py-8 px-10 max-w-sm mx-auto bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-6">
+  <img class="w-24 h-24 rounded-full mx-auto mx-0 shrink-0" src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
+  <div class="space-y-2 text-left ">
+    <div class="space-y-0.5 ">
+      <p class="text-lg text-black font-semibold">
+        {{ foo.user.username.capitalize }}
+          <span class="inline-flex">
                     <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
-                    <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
-                </span></h2>
-            {% endfor %}
-            {% for u in user %}
+                  <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
+                </span>
+      </p>
+      <p class="text-slate-500 font-medium">
+
+        {{ foo.user.profile.bio }}
+      </p>
+    {% comment %}</div>
+    <button class="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Message</button>
+  </div>{% endcomment %}
+</div>
+</li>
+    {% endfor %}
+    </ul>
+
+{#            {% for user in users_online %}#}
+{#                <h2 class="text-2xl lg:text-3xl text-white bg-slate-700 rounded p-3 mb-3">{{ user.user }}#}
+{#                    <span class="inline-flex">#}
+{#                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>#}
+{#                    <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>#}
+{#                </span></h2>#}
+{#            {% endfor %}#}
+
+
+
+{#            {% for u in user %}#}
 {#                {% if u.profile.is_online %}#}
 {#                    <h2>online :  {{ u.username }}</h2>#}
 {#                {% else %}#}
 {#                    <h2>offline : {{ u.username }}</h2>#}
 {##}
 {#                {% endif %}#}
-            {% endfor %}
-
-
-
-        </div>
-
+{#            {% endfor %}#}
 {% endblock %}
