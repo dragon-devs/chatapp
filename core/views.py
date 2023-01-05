@@ -28,7 +28,7 @@ def signup(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Account created successfully')
-            return redirect('frontpage')
+            return redirect('profile')
     else:
         form = CustomUserCreationForm()
     return render(request, 'core/signup.html', {'form': form})
@@ -36,5 +36,12 @@ def signup(request):
 
 @login_required()
 def profile(request):
-    context = {}
-    return render(request, 'core/profile.html', {'profile': context})
+    user = request.user.profile
+    form = ProfileForm(instance=user)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+    context = {'form': form}
+    return render(request, 'core/profile.html', context)

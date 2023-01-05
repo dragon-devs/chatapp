@@ -39,17 +39,19 @@
          <div class="mt-4 py-8 px-10 max-w-sm mx-auto bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-6">
   <img class="w-24 h-24 rounded-full mx-auto mx-0 shrink-0" src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
   <div class="space-y-2 text-left ">
-    <div class="space-y-0.5 ">
+    <div class=" ">
       <p class="text-lg text-black font-semibold">
-        {{ foo.user.username.capitalize }}
+        {{ foo.user.profile.name.capitalize }}
           <span class="inline-flex">
                     <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
                   <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
                 </span>
       </p>
-      <p class="text-slate-500 font-medium">
-
-        {{ foo.user.profile.bio }}
+      <p class="text-slate-400 font-sm italic">
+        {{ foo.user.email }}
+      </p>
+        <p class="text-slate-500 font-medium">
+        {{ foo.user.profile.bio.capitalize }}
       </p>
     {% comment %}</div>
     <button class="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Message</button>
