@@ -40,13 +40,25 @@
   <img class="w-24 h-24 rounded-full mx-auto mx-0 shrink-0" src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
   <div class="space-y-2 text-left ">
     <div class=" ">
-      <p class="text-lg text-black font-semibold">
-        {{ foo.user.profile.name.capitalize }}
+
+          {% if foo.user.profile.name %}
+            <p class="text-lg text-black font-semibold">
+           {{ foo.user.profile.name.capitalize }}
           <span class="inline-flex">
                     <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
                   <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
                 </span>
-      </p>
+            </p>
+          {% else %}
+              <p class="text-lg text-black font-semibold">
+              {{ foo.user.username.capitalize }}
+          <span class="inline-flex">
+                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
+                  <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
+                </span>
+            </p>
+          {% endif %}
+
       <p class="text-slate-400 font-sm italic">
         {{ foo.user.email }}
       </p>

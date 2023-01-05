@@ -24,7 +24,7 @@ class Message(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, null=True)
+    name = models.CharField(max_length=20)
     bio = models.CharField(max_length=255, default="Say something about yourself!")
     profile_pic = models.ImageField(null=True, blank=True, upload_to='images/profile/',
                                     default='images/profile-default.png')
