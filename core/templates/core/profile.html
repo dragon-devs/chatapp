@@ -11,7 +11,7 @@
     <form action="" enctype="multipart/form-data" method="post">
         {% csrf_token %}
 
-<figure class="bg-slate-100 rounded-xl p-8 dark:bg-slate-800">
+<figure class="rounded-xl p-8 bg-slate-800">
 
     <label for="profile_pic"><img class="w-36 h-36 rounded-full mx-auto shrink-0 object-cover object-top bg-no-repeat bg-center mx-auto" src="{{ request.user.profile.profile_pic.url }}" alt=""></label>
     <input type="file" id="profile_pic" name="profile_pic" accept="image/*" hidden="true">
