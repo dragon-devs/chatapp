@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-3$l^tvmdbaj7l9#xk$*7(%%$3a^-%l4(sa_v@6(g3a^q!%=38l
 DEBUG = True
 
 # ALLOWED_HOSTS = ['192.168.44.44']
-ALLOWED_HOSTS = ['172.105.24.233', '127.0.0.1']
+ALLOWED_HOSTS = ['139.177.204.171', '127.0.0.1']
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/rooms/'
@@ -96,8 +96,10 @@ DATABASES = {
         'NAME': 'chatapp',
         'USER': 'root',
         'PASSWORD': 'Brucelee47',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'HOST': 'localhost',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
