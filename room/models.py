@@ -4,7 +4,8 @@ from django.db.models.signals import pre_save, post_save
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=10)
+    description = models.CharField(max_length=255, default='Chat group just for fun...')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
