@@ -12,24 +12,34 @@
     <div class="lg:w-2/4 mx-6 lg:mx-auto p-4 bg-white rounded-xl">
         <div class="chat-messages space-y-3" id="chat-messages">
             {% for message in messages %}
-                <div class="p-4 bg-gray-200 rounded-xl">
-                <p class="font-semibold">{{ message.user.username }}</p>
-                   {% comment %} {% if message.user.is_online %}
+                <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4">
+                    <img class="row-span-3 w-12 h-12 rounded-full mx-auto mx-0 shrink-0 object-cover object-top "
+                         src="{{ request.user.profile.profile_pic.url }}" alt="Not Found">
+                    <div class="">
+
+                        <p class="font-semibold text-sm  text-slate-900 ">
+                            {{ message.user.profile.name.capitalize }}
+
+                        </p>
+                        {% comment %} {% if message.user.is_online %}
                          <p class="font-semibold">{{ message.user.username.capitalize }}
                             <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
                          </p>
                     {% else %}
                         <p class="font-semibold">{{ message.user.username.capitalize }}</p>
                     {% endif %}{% endcomment %}
-                    <p>{{ message.content }}</p>
+                        <p class="text-slate-900 text-sm  dark:text-slate-800">{{ message.content }}</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
     <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
         <form action="." method="post" class="flex">
-            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input">
-            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">Send</button>
+            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input" required>
+            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">
+                Send
+            </button>
         </form>
     </div>
 {% endblock %}
@@ -38,60 +48,70 @@
 {% block scripts %}
     {{ room.slug|json_script:"json-roomname" }}
     {{ request.user.username|json_script:"json-username" }}
-<script>
-    const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
-    const userName  = JSON.parse(document.getElementById('json-username').textContent);
+    {{ request.user.profile.name|json_script:'json-name' }}
+    <script>
+        const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+        const userName = JSON.parse(document.getElementById('json-username').textContent);
+        const Name = JSON.parse(document.getElementById('json-name').textContent);
 
-    const chatSocket = new WebSocket(
-        'ws://'
-        + window.location.host
-        + '/ws/'
-        + roomName
-        + '/'
-    );
-    chatSocket.onmessage = function(e) {
-        console.log('onmessage')
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/'
+            + roomName
+            + '/'
+        );
+        chatSocket.onmessage = function (e) {
+            console.log('onmessage')
 
-        const data = JSON.parse(e.data);
+            const data = JSON.parse(e.data);
 
-        if (data.message) {
-            let html = '<div class="p-4 bg-gray-200 rounded-xl">';
-                html += '<p class="font-semibold">'+ data.username+ '</p>'
-                html += '<p>'+ data.message + '</p></div>'
-            document.querySelector('#chat-messages').innerHTML += html;
+
+            if (data.message)  {
+                let html = '<div class="bg-gray-200 rounded-xl flex items-center gap-4 p-4">';
+                html += '<img class="w-12 h-12 rounded-full mx-auto mx-0 shrink-0 object-cover object-top " src="{{ request.user.profile.profile_pic.url }}" alt="Not Found">';
+                html += '<div><p class="font-semibold text-sm  text-slate-900">' + data.name + '</p>'
+                html += '<p class="text-slate-900 text-sm  dark:text-slate-800">' + data.message + '</p></div></div>'
+                document.querySelector('#chat-messages').innerHTML += html;
 
                 scrollToBottom();
-        } else {
-            alert('The message is empty!')
+            } else {
+                alert('The message is empty!')
+            }
         }
-    }
-    chatSocket.onclose = function(e) {
-        console.log('onclose')
-    }
-    //
+        chatSocket.onclose = function (e) {
+            console.log('onclose')
+        }
+        //
 
-    document.querySelector('#chat-message-submit').onclick = function (e) {
-        e.preventDefault();
-        const messageInputDom = document.querySelector('#chat-message-input');
-        const message = messageInputDom.value;
+        document.querySelector('#chat-message-submit').onclick = function (e) {
+            e.preventDefault();
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            scrollToRight()
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': userName,
+                'room': roomName,
+                'name': Name
+            }));
+            messageInputDom.value = '';
 
-        chatSocket.send(JSON.stringify({
-            'message': message,
-            'username': userName,
-            'room': roomName
-        }));
-        messageInputDom.value = '';
+            return false;
+        }
 
-        return false;
-    }
+        //
+        function scrollToBottom() {
+            const objDiv = document.querySelector('#chat-messages');
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }
 
-    //
-    function scrollToBottom() {
-        const objDiv = document.querySelector('#chat-messages');
-        objDiv.scrollTop = objDiv.scrollHeight;
-    }
+        function scrollToRight() {
+            const objDiv = document.querySelector('#chat-message-input');
+            objDiv.scrollLeft = objDiv.scrollWidth;
+        }
 
-    scrollToBottom();
+        scrollToBottom();
 
-</script>
+    </script>
 {% endblock %}

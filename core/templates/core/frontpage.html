@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-        {% comment %}<div class="p-8 lg:p10 text-center">
+    {% comment %}<div class="p-8 lg:p10 text-center">
 
             {% for user in users_online %}
         <ul >
@@ -30,73 +30,90 @@
       </ul>
 </div>
 {% endcomment %}
-    <div class="text-lg text-black font-small mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3 ">
-         <span class="bg-indigo-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">UPDATED</span>
-        <u class="text-sm ">
+    <div class="whitespace-normal text-lg text-black font-small mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm bg-white
+                                        rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3 ">
+        <span class="bg-indigo-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">UPDATED</span>
+        <ul class="text-sm list-outside no-underline">
             <li>Emjoys 🤝 sending fixed!</li>
             <li>Profile Pictures Proportion fixed!</li>
-        </u>
+        </ul>
 
     </div>
     <h1 class="text-3xl text-center lg:text-5xl mt-4 mb-5 text-white font-bold">ONLINE USERS</h1>
-    <ul class="">
-    {% for foo in users_online %}
-        <li>
-         <div class="mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm  bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3">
+    <ul class="list-outside">
+        {% for foo in users_online %}
+            <li>
+{#                <div class="mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm  bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3">#}
+                <div class="py-4 px-2 mx-6 sm:mx-auto max-w-sm relative ">
 
-{#             <img class="w-24 h-24 rounded-full mx-auto mx-0 shrink-0" src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">#}
-             <img class="w-28 h-28 rounded-full mx-auto mx-0 shrink-0 object-cover object-top " src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
-  <div class="space-y-2 text-left ">
-    <div class=" ">
+<div class="overflow-visible relative max-w-sm mx-auto bg-white shadow-lg ring-1 ring-black/5 rounded-xl flex items-center gap-6 dark:bg-slate-800 dark:highlight-white/5">
+    <img class="absolute -left-5 w-24 h-24 shadow-lg rounded-full mx-auto mx-0 shrink-0 object-cover object-top" src="{{ foo.user.profile.profile_pic.url }}">
+    <span class="absolute h-4 w-4 -right-0 -top-2">
+        <span class="animate-ping inline-flex absolute h-6 w-6 rounded-full bg-sky-400 opacity-75"></span>
+        <span class="inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
+    </span>
+    <div class="flex flex-col py-4 pl-24">
+      <strong class="text-slate-900 font-semibold text-black dark:text-slate-200">{{ foo.user.profile.name.capitalize }}</strong>
+      <span class="text-slate-500 text-sm mt-1 font-medium dark:text-slate-400 break-all">{{ foo.user.email }}</span>
+    </div>
+  </div>
 
-          {% if foo.user.profile.name %}
-            <p class="text-lg text-black font-semibold">
-           {{ foo.user.profile.name.capitalize }}
-          <span class="inline-flex">
-                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
-                  <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
-                </span>
-            </p>
-          {% else %}
-              <p class="text-lg text-black font-semibold">
-              {{ foo.user.username.capitalize }}
-          <span class="inline-flex">
-                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
-                  <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
-                </span>
-            </p>
-          {% endif %}
+                  {% comment %}  <img class="w-28 h-28 rounded-full mx-auto mx-0 shrink-0 object-cover object-top "
+                         src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
+                    <div class="space-y-2 text-left ">
+                        <div class=" ">
+                            {% if foo.user.profile.name %}
+                                <p class="text-lg text-black font-semibold">
+                                    {{ foo.user.profile.name.capitalize }}
+                                    <span class="inline-flex">
+                                        <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
+                                        <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
+                                    </span>
+                                </p>
+                            {% else %}
+                                <p class="text-lg text-black font-semibold">
+                                    {{ foo.user.profile.name.capitalize }}
+                                    <span class="inline-flex">
+                                        <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>
+                                        <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>
+                                    </span>
+                                </p>
+                            {% endif %}
+                            <div class="text-sm break-all leading-6 col-start-1 col-span-2 row-start-4 col-span-1">
+                                <p class="text-slate-400 font-sm italic">
+                                    {{ foo.user.email }}
+                                </p>
+                                <p class="text-slate-500 font-medium">
+                                    {{ foo.user.profile.bio.capitalize }}
+                                </p>
+                            </div>{% endcomment %}
 
-      <p class="text-slate-400 font-sm italic">
-        {{ foo.user.email }}
-      </p>
-        <p class="text-slate-500 font-medium">
-        {{ foo.user.profile.bio.capitalize }}
-      </p>
-    {% comment %}</div>
+
+
+                            {% comment %}</div>
     <button class="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Message</button>
   </div>{% endcomment %}
-</div>
-</li>
-    {% endfor %}
+{#                        </div>#}
+            </li>
+        {% endfor %}
     </ul>
 
-{#            {% for user in users_online %}#}
-{#                <h2 class="text-2xl lg:text-3xl text-white bg-slate-700 rounded p-3 mb-3">{{ user.user }}#}
-{#                    <span class="inline-flex">#}
-{#                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>#}
-{#                    <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>#}
-{#                </span></h2>#}
-{#            {% endfor %}#}
+    {#            {% for user in users_online %}#}
+    {#                <h2 class="text-2xl lg:text-3xl text-white bg-slate-700 rounded p-3 mb-3">{{ user.user }}#}
+    {#                    <span class="inline-flex">#}
+    {#                    <span class="animate-ping inline-flex absolute h-4 w-4 rounded-full bg-sky-400 opacity-75"></span>#}
+    {#                    <span class="inline-flex rounded-full h-4 w-4 bg-sky-500"></span>#}
+    {#                </span></h2>#}
+    {#            {% endfor %}#}
 
 
 
-{#            {% for u in user %}#}
-{#                {% if u.profile.is_online %}#}
-{#                    <h2>online :  {{ u.username }}</h2>#}
-{#                {% else %}#}
-{#                    <h2>offline : {{ u.username }}</h2>#}
-{##}
-{#                {% endif %}#}
-{#            {% endfor %}#}
+    {#            {% for u in user %}#}
+    {#                {% if u.profile.is_online %}#}
+    {#                    <h2>online :  {{ u.username }}</h2>#}
+    {#                {% else %}#}
+    {#                    <h2>offline : {{ u.username }}</h2>#}
+    {##}
+    {#                {% endif %}#}
+    {#            {% endfor %}#}
 {% endblock %}

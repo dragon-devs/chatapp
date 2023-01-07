@@ -82,11 +82,14 @@ WSGI_APPLICATION = 'django_chat.wsgi.application'
 ASGI_APPLICATION = 'django_chat.asgi.application'
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+    'ROUTING': 'ws.routing.application',
 }
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 

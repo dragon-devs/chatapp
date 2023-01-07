@@ -17,7 +17,9 @@ class Message(models.Model):
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
     content = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
-    is_online = False
+
+    def __str__(self):
+        return str(self.user.profile.name + ':' + self.content)
 
     class Meta:
         ordering = ('date_added',)
