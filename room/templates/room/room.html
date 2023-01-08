@@ -15,16 +15,21 @@
             {% for message in messages %}
                 {% if message.user.username == request.user.username %}
                     <div class="flex justify-end">
-                        <div class="bg-blue-200 rounded-xl inline-block items-center gap-4 p-4 ">
-                            <p class="text-slate-900 text-sm  dark:text-slate-800">{{ message.content }}</p>
+                        <div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
+                            <p class="flex justify-end text-white text-sm text-xs">{{ message.user.profile.name }}</p>
+                            <p class="text-slate-200 text-sm">{{ message.content }}</p>
                         </div>
                     </div>
                 {% else %}
                     <div class="flex justify">
+                        <a href="{% url 'user_profile' message.user.username %}" class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top">
+                            <img class="rounded-full" src="{{ message.user.profile.profile_pic.url }}" alt="Not Found"></a>
+
                         <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
-                            <img class="row-span-3 w-12 h-12 rounded-full mx-auto mx-0 shrink-0 object-cover object-top"
-                                 src="{{ message.user.profile.profile_pic.url }}" alt="Not Found">
+
+
                             <div class="">
+                                <p class="text-slate-400 text-sm text-xs ">{{ message.date_added }}</p>
                                 {% if message.user.profile.name %}
                                     <p class="font-semibold text-sm  text-slate-900 ">
                                         {{ message.user.profile.name.capitalize }}
@@ -39,6 +44,7 @@
                             </div>
                         </div>
                     </div>
+
                 {% endif %}
             {% endfor %}
         </div>
@@ -48,7 +54,9 @@
             <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input"
                    required>
             <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">
-                Send
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                </svg>
             </button>
         </form>
     </div>
@@ -59,12 +67,10 @@
     {{ room.slug|json_script:"json-roomname" }}
     {{ request.user.username|json_script:"json-username" }}
     {{ request.user.profile.name|json_script:'json-name' }}
-    {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
     <script>
         const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
         const userName = JSON.parse(document.getElementById('json-username').textContent);
         const Name = JSON.parse(document.getElementById('json-name').textContent);
-        const Pic = JSON.parse(document.getElementById('json-pic').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -78,10 +84,10 @@
 
             const data = JSON.parse(e.data);
             if (data.username === userName) {
-
                 if (data.message.length > 0) {
-                    let html = '<div class="flex justify-end"><div class="bg-blue-200 rounded-xl inline-block items-center gap-4 p-4 ">';
-                    html += '<p class="text-slate-900 text-sm  dark:text-slate-800">' + data.message + '</p></div></div></div>';
+                    let html = '<div class="flex justify-end"><div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">';
+                    html += '<p class=" flex justify-end text-white text-sm text-xs ">'+ data.name +'</p>';
+                    html += '<p class="text-slate-200 text-sm">' + data.message + '</p></div></div></div>';
                     document.querySelector('#chat-messages').innerHTML += html;
 
                     scrollToBottom();
@@ -117,7 +123,6 @@
                 'username': userName,
                 'room': roomName,
                 'name': Name,
-                'pic': Pic
             }));
             messageInputDom.value = '';
 

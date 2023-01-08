@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+    Profile |
+{% endblock %}
+
+{% block content %}
+<main class="flex items-center justify-center mt-10 lg:h-screen  ">
+
+    <div class="  w-96 p-6 rounded apply-glass">
+            <h1 class="flex items-center justify-center mb-4 h-20 text-3xl font-bold text-gray-100">{{ user_profile.username }}</h1>
+
+ <figure class="rounded-xl p-8 bg-slate-800 ">
+     <label for="profile_pic"><img class="w-36 h-36 rounded-full mx-auto shrink-0 object-cover object-top bg-no-repeat bg-center mx-auto" src="{{ user_profile.profile.profile_pic.url }}" alt=""></label>
+
+{#  <img class="w-24 h-24 rounded-full mx-auto" src="/sarah-dayan.jpg" alt="" width="384" height="512">#}
+  <div class="pt-6 text-center space-y-4">
+    <blockquote>
+      <p class="text-lg text-white font-medium">
+            {{ user_profile.profile.bio.capitalize }}
+      </p>
+    </blockquote>
+    <figcaption class="font-medium">
+      <div class="text-sky-400 ">
+        {{ user_profile.profile.name }}
+      </div>
+      <div class="text-slate-500 ">
+          {{ user_profile.email }}
+      </div>
+        <div class="text-slate-500 mt-4">
+            <button class="px-5 py-2 text-sm text-blue-600 font-semibold rounded-full border border-blue-200 hover:text-white hover:bg-blue-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">Message</button>
+        </div>
+    </figcaption>
+  </div>
+</figure>
+    </div>
+</main>
+
+{% comment %}
+
+<main class="flex items-center justify-center mt-20 lg:h-screen  ">
+        <div class="  w-96 p-6 rounded apply-glass">
+            <h1 class="flex items-center justify-center mb-4 h-20 text-3xl font-bold text-gray-100">Log in</h1>
+        <form action="." method="post" class="">
+        {% csrf_token %}
+
+        <div class="">
+            <label for="username" class="text-gray-100">Username</label>
+            <input type="text" name="username" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
+        </div>
+         <div class="">
+                <label for="password" class="text-gray-100">Password</label>
+                <input type="password" name="password" class="w-full rounded py-2 bg-gray-50 text-gray-500 px-1 outline-none mb-4">
+            </div>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="mb-5 p-4 rounded-xl bg-red-800 text-white">
+                        <p>{{ error|escape }}</p>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
+        <button class="bg-slate-700 w-full text-gray-200 mt-4 mb-4 py-2 rounded hover:bg-slate-800 transition-colors">Log in</button>
+    </div>
+    </form>
+        </div>
+    </main>
+
+{% endcomment %}
+
+
+
+{% endblock %}

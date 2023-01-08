@@ -45,3 +45,9 @@ def profile(request):
             form.save()
     context = {'form': form}
     return render(request, 'core/profile.html', context)
+
+
+def user_profile(request, username):
+    username = User.objects.get(username=username)
+
+    return render(request, 'core/user_profile.html', {'user_profile': username})

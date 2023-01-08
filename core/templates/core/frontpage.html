@@ -47,8 +47,10 @@
                 <div class="py-4 px-2 mx-6 sm:mx-auto max-w-sm relative ">
 
 <div class="overflow-visible relative max-w-sm mx-auto bg-white shadow-lg ring-1 ring-black/5 rounded-xl flex items-center gap-6 dark:bg-slate-800 dark:highlight-white/5">
-    <img class="absolute -left-5 w-24 h-24 shadow-lg rounded-full mx-auto mx-0 shrink-0 object-cover object-top" src="{{ foo.user.profile.profile_pic.url }}">
-    <span class="absolute h-4 w-4 -right-0 -top-2">
+    <div class="absolute -left-5 w-24 h-24"><a href="{% url 'user_profile' foo.user.username %}"><img class=" w-24 h-24 shadow-lg rounded-full mx-auto mx-0 shrink-0 object-cover object-top" src="{{ foo.user.profile.profile_pic.url }}">
+        </a>
+        </div>
+        <span class="absolute h-4 w-4 -right-0 -top-2">
         <span class="animate-ping inline-flex absolute h-6 w-6 rounded-full bg-sky-400 opacity-75"></span>
         <span class="inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
     </span>
