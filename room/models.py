@@ -30,7 +30,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=20)
     bio = models.CharField(max_length=255, default="Say something about yourself!")
     profile_pic = models.ImageField(null=True, blank=True, upload_to='images/profile/',
-                                    default='images/profile-default.png')
+                                    default='images/profile.png')
 
     def __str__(self):
         return str(self.user)

@@ -7,7 +7,7 @@
 {% block content %}
 <main class="flex items-center justify-center mt-10 lg:h-screen  ">
         <div class="  w-96 p-6 rounded apply-glass">
-            <h1 class="flex items-center justify-center mb-4 h-20 text-3xl font-bold text-gray-100">Profile</h1>
+            <h1 class="flex items-center justify-center mb-4 h-20 text-3xl font-bold text-gray-100">{{ request.user.username.upper }}</h1>
     <form action="" enctype="multipart/form-data" method="post">
         {% csrf_token %}
 

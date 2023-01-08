@@ -53,8 +53,13 @@
         <span class="inline-flex rounded-full h-6 w-6 bg-sky-500"></span>
     </span>
     <div class="flex flex-col py-4 pl-24">
-      <strong class="text-slate-900 font-semibold text-black dark:text-slate-200">{{ foo.user.profile.name.capitalize }}</strong>
-      <span class="text-slate-500 text-sm mt-1 font-medium dark:text-slate-400 break-all">{{ foo.user.email }}</span>
+        {% if foo.user.profile.name %}
+            <strong class="text-slate-900 font-semibold text-black dark:text-slate-200">{{ foo.user.profile.name.capitalize }}</strong>
+        {% else %}
+            <strong class="text-slate-900 font-semibold text-black dark:text-slate-200">{{ foo.user.username.capitalize }}</strong>
+        {% endif %}
+
+        <span class="text-slate-500 text-sm mt-1 font-medium dark:text-slate-400 break-all">{{ foo.user.email }}</span>
     </div>
   </div>
 
