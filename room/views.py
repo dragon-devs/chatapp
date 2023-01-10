@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import online_users
 from django.contrib.auth.decorators import login_required
@@ -17,6 +17,8 @@ def rooms(request):
 @login_required
 def room(request, slugs):
     room = Room.objects.get(slug=slugs)
-    messages = Message.objects.filter(room=room)
+    messages = Message.objects.filter(room=room).order_by('-id')[:100][::-1]
+    global now
+    now = datetime.now()
 
-    return render(request, 'room/room.html', {'room': room, 'messages': messages})
+    return render(request, 'room/room.html', {'room': room, 'messages': messages, 'time_now': now})

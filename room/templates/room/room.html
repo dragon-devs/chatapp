@@ -16,17 +16,18 @@
                 {% if message.user.username == request.user.username %}
                     <div class="flex justify-end">
                         <div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
-                            <p class="flex justify-end text-white text-sm text-xs">{{ message.user.profile.name }}</p>
-                            <p class="text-slate-200 mt-1 text-sm">{{ message.content }}</p>
+                            <p class="flex justify-end  text-white font-semibold text-sm text-xs">{{ message.user.profile.name }}</p>
+                            <p class="text-slate-100 mt-1 text-sm">{{ message.content }}</p>
+                            <p class="text-gray-200 text-sm text-xs mt-2 float-right">{{ message.date_added|time:"h:i A" }}</p>
                         </div>
                     </div>
                 {% else %}
                     <div class="flex justify">
                         <a href="{% url 'user_profile' message.user.username %}" class="">
-                            <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top" src="{{ message.user.profile.profile_pic.url }}" alt="Not Found"></a>
+                            <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top"
+                                 src="{{ message.user.profile.profile_pic.url }}" alt="Not Found"></a>
                         <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
                             <div class="">
-{#                                <p class="text-slate-400 text-sm text-xs ">{{ message.date_added }}</p>#}
                                 {% if message.user.profile.name %}
                                     <p class="font-semibold text-sm  text-slate-900 ">
                                         {{ message.user.profile.name.capitalize }}
@@ -37,10 +38,13 @@
                                     </p>
                                 {% endif %}
 
-                                <p class="text-slate-900 text-sm mt-1 dark:text-slate-800">{{ message.content }}</p>
+                                <p class="text-slate-800 text-sm mt-1">{{ message.content }}</p>
+                                <p class="text-slate-400 text-sm mt-2 text-xs float-right">{{ message.date_added|time:"h:i A" }}</p>
                             </div>
                         </div>
                     </div>
+
+                    {{ time_now|time:"h:i A"|json_script:"add_time" }}
 
                 {% endif %}
             {% endfor %}
@@ -48,10 +52,10 @@
     </div>
     <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
         <form action="." method="post" class="flex">
-            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input"
-                   required>
-            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+            <input type="text" name="content" class="flex-1 mr-3"  placeholder="Your message..." id="chat-message-input" required>
+            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800"  id="chat-message-submit" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-send-fill" viewBox="0 0 16 16">
                     <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
                 </svg>
             </button>
@@ -65,14 +69,19 @@
     {{ request.user.username|json_script:"json-username" }}
     {{ request.user.profile.name|json_script:'json-name' }}
     {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
-    {{ messages.date_added|json_script:'json-date'}}
 
     <script>
+        function CheckSpace(){
+            var space = document.getElementById("chat-message-input")
+            if(space.selectionStart === 0 && window.event.code === "Space"){
+                window.event.preventDefault()
+            }
+        }
         const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
         const userName = JSON.parse(document.getElementById('json-username').textContent);
         const Name = JSON.parse(document.getElementById('json-name').textContent);
         const ProfilePic = JSON.parse(document.getElementById('json-pic').textContent);
-        const Date = JSON.parse(document.getElementById('json-date').textContent);
+        const Date = JSON.parse(document.getElementById('add_time').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -84,36 +93,50 @@
         chatSocket.onmessage = function (e) {
             console.log('onmessage')
             const data = JSON.parse(e.data);
+            console.log(data.date)
+
             if (data.message) {
                 if (data.username == '{{ request.user.username }}') {
                     var msg = `<div class="flex justify-end"><div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
                     <p class=" flex justify-end text-white font-semibold text-xs "> ${data.name} </p>
-                    <p class="text-slate-200 mt-1 text-sm"> ${data.message} </p></div></div></div>`
+                    <p class="text-slate-100 mt-1 text-sm"> ${data.message} </p>
+                    <p class="text-slate-200 mt-2 text-sm text-xs float-right "> ${data.date} </p>
+                    </div></div></div>`
 
                 } else {
-                   var msg = `<div class="flex justify">
-                        <a href="/user_profile/${ data.username }" class="">
-                            <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top" src="${ data.pic }" alt="Not Found"></a>
+                    var msg = `<div class="flex justify">
+                        <a href="/user_profile/${data.username}" class="">
+                            <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top" src="${data.pic}" alt="Not Found"></a>
                         <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
                             <div class="">
-                                <p class="text-slate-400 text-sm text-xs ">  </p>
                                     <p class="font-semibold text-sm  text-slate-900 ">
-                                        ${ data.name }
+                                        ${data.name}
                                     </p>
-                                <p class="text-slate-900 text-sm mt-1 dark:text-slate-800">${ data.message }</p>
+                                <p class="text-slate-800 text-sm mt-1">${data.message}</p>
+                                <p class="text-slate-400 text-sm mt-2 text-xs float-right"> ${data.date} </p>
                             </div>
                         </div>
                     </div>`
 
-
                 }
-
             } else {
+                var msg = ''
+            }
 
-                }
-        document.querySelector('#chat-messages').innerHTML += msg;
-        scrollToBottom();
+            document.querySelector('#chat-messages').innerHTML += msg;
+            scrollToBottom();
+
+            {% comment %}if (data.date) {
+                showDatesWeekDays(data.date)
+            } else {
+                showDatesWeekDays(new Date())
+            }
+{% endcomment %}
+
+
         }
+
+
         chatSocket.onclose = function (e) {
             console.log('onclose')
         }
@@ -147,23 +170,8 @@
             const objDiv = document.querySelector('#chat-message-input');
             objDiv.scrollLeft = objDiv.scrollWidth;
         }
-        function getTime(msg_time) {
-            let today;
-            let temp;
-            if (msg_time) {
-                // define as Date so we can convert to acceptable date time format (with out letter T, ex. 2020-10-10T06:50:14.751 )
-                temp = new Date(msg_time);
 
-                // suffix UTC so it will render as local time when it use toLocalString
-                today = new Date(`${temp.toLocaleString()} UTC`);
-            } else {
-                today = new Date();
-            }
 
-            // format & render to local time
-            return today.toLocaleString([], {hour: '2-digit', minute: '2-digit'})
-
-        }
 
         function showDatesWeekDays(date_created) {
             // add the newly created element and its content into the DOM
@@ -174,12 +182,12 @@
                 let newDiv = document.createElement("div");
                 let currentDiv = document.getElementById("new-message-chat");
                 let parentDiv = currentDiv.parentNode;
-                let days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
                 if (dt.toDateString() == new Date().toDateString()) {
                     // display TODAY in message
                     date_weekday = 'TODAY';
-                } else if(dt > getDateBefore()) {
+                } else if (dt > getDateBefore()) {
                     // display week day in message
                     date_weekday = days[dt.getDay()].toUpperCase()
                 } else {
