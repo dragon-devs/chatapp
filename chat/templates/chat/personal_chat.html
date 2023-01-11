@@ -6,40 +6,61 @@
 {% endblock %}
 
 {% block content %}
-    {% for user in users %}
-        <a href="{% url 'personal-chat' username=user.username %}"> {{ user.username }}</a>
+
+    <div class="relative overflow-auto ">
+    <div class="max-w-md mx-auto bg-white shadow-xl min-w-0 dark:bg-slate-800 dark:highlight-white/5">
+    <div class="overflow-x-auto flex" >
+        {% for user in users %}
+
+        <div class="flex-none py-4 px-3 first:pl-6 last:pr-6 relative">
+        <a href="{% url 'personal-chat' username=user.username %}">
+        <div class="flex flex-col items-center justify-center gap-3 mx-5">
+            {% if user.username in online_users %}
+                <div class="absolute h-3 w-3">
+                 <span class="">
+                    <span class="inline-flex mx-5 rounded-full h-full w-full bg-sky-500"></span>
+                </span>
+                </div>
+            {% endif %}
+          <img class="w-14 h-14 rounded-full" src="{{ user.profile.profile_pic.url }}">
+
+            {% if user.profile.name %}
+                <strong class="text-slate-900 text-xs font-medium dark:text-slate-200">{{ user.profile.name }}</strong>
+            {% else %}
+                <strong class="text-slate-900 text-xs font-medium dark:text-slate-200">{{ user.username }}</strong>
+            {% endif %}
+        </div>
+      </div>
+            </a>
     {% endfor %}
-    <div class="lg:w-2/4 mx-6 lg:mx-auto p-4 mt-10 bg-white rounded-xl">
+    </div>
+    </div>
+    </div>
+
+
+    <p class="text-slate-900 text-sm max-w-sm flex items-centerflex mt-0 items-center justify-center h-16 text-3xl font-bold text-gray-100  mx-auto font-semibold dark:text-slate-200">
+        {{ user.profile.name.capitalize }}</p>
+    <div class="lg:w-2/4 mx-6 lg:mx-auto p-4 bg-white rounded-xl">
         <div class="chat-messages space-y-3" id="chat-messages">
             {% for message in chat_message %}
-                {% if message.user.username == request.user.username %}
+                {% if message.sender.username == request.user.username %}
                     <div class="flex justify-end">
                         <div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
-                            <p class="flex justify-end  text-white font-semibold text-sm text-xs">{{ message.user.profile.name }}</p>
                             <p class="text-slate-100 mt-1 text-sm">{{ message.content }}</p>
-                            <p class="text-gray-200 text-sm text-xs mt-2 float-right">{{ message.date_added|time:"h:i A" }}</p>
+                            <p class="text-gray-200 text-sm text-xs mt-2 float-right">{{ message.added_date|time:"h:i A" }}</p>
                         </div>
                     </div>
                 {% else %}
                     <div class="flex justify">
 
-                        <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top"
-                             src="{{ message.user.profile.profile_pic.url }}" alt="Not Found"></a>
+                        <img class="w-4 h-4 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top"
+                             src="{{ message.sender.profile.profile_pic.url }}" alt="Not Found"></a>
                         <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
                             <div class="">
-                                {% if message.user.profile.name %}
-                                    <p class="font-semibold text-sm  text-slate-900 ">
-                                        {{ message.user.profile.name.capitalize }}
-                                    </p>
-                                {% else %}
-                                    <p class="font-semibold text-sm  text-slate-900 ">
-                                        {{ message.user.username.capitalize }}
-                                    </p>
-                                {% endif %}
                                 <div id="message_box">
                                     <p class="text-slate-800 text-sm mt-1">{{ message.content }}</p>
                                 </div>
-                                <p class="text-slate-400 text-sm mt-2 text-xs float-right">{{ message.date_added|time:"h:i A" }}</p>
+                                <p class="text-slate-400 text-sm mt-2 text-xs float-right">{{ message.added_date|time:"h:i A" }}</p>
                             </div>
                         </div>
                     </div>
@@ -51,8 +72,7 @@
     <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
         <form action="." method="post" class="flex">
             {% csrf_token %}
-            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input"
-                   required>
+            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input">
             <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -63,9 +83,93 @@
 
     </div>
 
-
-
     {{ user.id|json_script:"json-username" }}
     {{ request.user.username|json_script:"json-message-username" }}
-    <script src="{% static 'js/chat.js' %}"></script>
+    {{ request.user.profile.name|json_script:'json-name' }}
+    {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
+    {% block scripts %}
+        <script>
+
+            const id = JSON.parse(document.getElementById('json-username').textContent);
+            const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
+            const Name = JSON.parse(document.getElementById('json-name').textContent);
+            const ProfilePic = JSON.parse(document.getElementById('json-pic').textContent);
+
+            const socket = new WebSocket(
+                'ws://'
+                + window.location.host
+                + '/ws/'
+                + id
+                + '/'
+            );
+
+            socket.onopen = function (e){
+                console.log("CONNECTED.");
+            }
+
+            socket.onclose = function (e){
+                console.log("LOST.");
+            }
+
+            socket.onerror = function (e){
+                console.log(e);
+            }
+
+            socket.onmessage = function (e){
+                const data = JSON.parse(e.data)
+
+                if (data.message) {
+                    if (data.username === '{{ request.user.username }}' ) {
+                        var msg = `<div class="flex justify-end"><div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
+                        <p class="text-slate-100 mt-1 text-sm"> ${data.message} </p>
+                        <p class="text-slate-200 mt-2 text-sm text-xs float-right "> ${data.date} </p>
+                        </div></div></div>`
+
+                    } else {
+                        var msg = `<div class="flex justify">
+                                <img class="w-4 h-4 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top" src="${data.pic}" alt="Not Found"></a>
+                            <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
+                                <div class="">
+                                    <p class="text-slate-800 text-sm mt-1">${data.message}</p>
+                                    <p class="text-slate-400 text-sm mt-2 text-xs float-right"> ${data.date} </p>
+                                </div>
+                            </div>
+                        </div>`
+
+                    }
+                } else {
+                    var msg = ''
+                }
+
+                document.querySelector('#chat-messages').innerHTML += msg;
+                scrollToBottom();
+
+            }
+
+            document.querySelector('#chat-message-submit').onclick = function (e){
+                const message_input = document.querySelector('#chat-message-input');
+                const message = message_input.value;
+
+                socket.send(JSON.stringify({
+                    'message': message,
+                    'username': message_username,
+                    'pic': ProfilePic,
+
+
+                }));
+                message_input.value = '';
+            }
+
+
+            function scrollToBottom() {
+                    const objDiv = document.querySelector('#chat-messages');
+                    objDiv.scrollTop = objDiv.scrollHeight;
+            }
+
+            scrollToBottom();
+
+
+
+        </script>
+    {% endblock %}
 {% endblock %}

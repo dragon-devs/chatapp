@@ -6,9 +6,37 @@
 {% endblock %}
 
 {% block content %}
-        {% for user in users %}
-            <a href="{% url 'personal-chat' username=user.username %}">{{ user.username }}</a>
+    <p class="text-slate-900 text-lg max-w-sm flex items-centerflex mt-2 items-center justify-center h-16 text-3xl font-bold text-gray-100  mx-auto font-semibold dark:text-slate-200">
+        Messenger</p>
+    <div title="main"
+         class="overflow-auto h-auto relative max-w-sm mx-auto bg-white mt-4 dark:bg-slate-800 dark:highlight-white/5 shadow-lg ring-1 ring-black/5 rounded-xl flex flex-col divide-y dark:divide-slate-200/5">
+            {% for user in users %}
+            <a href="{% url 'personal-chat' username=user.username %}">
+                <div dir="ltr" class="flex items-center gap-4 p-4">
+                    <p class="mb-4 text-sm font-medium"></p>
+                    <div class="group flex items-center">
+                        <img class=" w-14 h-14 shadow-lg rounded-full mx-auto mx-0 shrink-0 object-cover object-top"
+                             src="{{ user.profile.profile_pic.url }}" alt="">
+                        <div class="ml-3 rtl:ml-0 rtl:mr-3">
+                            {% if user.username in online_users %}
+                                <p class="text-cyan-500 font-semibold float ">Active <span class="inline-flex rounded-full h-3 w-3 bg-sky-500"></span></span></p>
+                            {% endif %}
+                            {% if user.profile.name %}
+                                <p class="text-sm font-medium text-slate-700 group-hover:text-slate-900 dark:text-slate-300 dark:group-hover:text-white">
+                                    {{ user.profile.name.capitalize }}</p>
+                            {% else %}
+                                <p class="text-sm font-medium text-slate-700 group-hover:text-slate-900 dark:text-slate-300 dark:group-hover:text-white">
+                                    {{ user.username.capitalize }}</p>
+                            {% endif %}
+                            <p class="text-sm font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+                                {{ user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
         {% endfor %}
+    </div>
 
 
 {% endblock %}

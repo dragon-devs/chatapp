@@ -16,7 +16,7 @@ class PersonalChat(models.Model):
 
 
 class PersonalMessage(models.Model):
-    sender = models.CharField(max_length=20, null=True)
+    sender = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     chat = models.ForeignKey(PersonalChat, blank=True, null=True, on_delete=models.CASCADE,
                              related_name='personalmessages')
     chat_name = models.CharField(max_length=20, null=True, blank=True)

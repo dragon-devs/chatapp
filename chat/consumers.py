@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
@@ -31,11 +33,16 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data=None, bytes_data=None):
+        now = datetime.now()
+
         data = json.loads(text_data)
         message = data['message']
         username = data['username']
+        pic = data['pic']
 
-        await self.save_message(username, self.room_group_name, message)
+        date = now.strftime("%I:%M %p")
+
+        await self.save_message(username, self.room_group_name, message, pic, date)
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -43,20 +50,26 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'message': message,
                 'username': username,
+                'pic':  pic,
+                'date':  date,
             }
         )
 
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
+        pic = event['pic']
+        date = event['date']
 
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
+            'pic': pic,
+            'date': date,
         }))
 
     @database_sync_to_async
-    def save_message(self, sender, chat_name, message):
+    def save_message(self, sender, chat_name, message, pic, date ):
         username = self.scope['user'].username
         other_user_id = self.scope['url_route']['kwargs']['id']
 
@@ -64,9 +77,8 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
         if PersonalChat.objects.filter(slug=chat_name):
             p_chat = PersonalChat.objects.get(slug=chat_name)
-            print('yes')
         else:
             p_chat = PersonalChat.objects.create(slug=chat_name,
-                                                 chat_name='chat_' + username + '_' + sender )
-            print('no')
+                                                 chat_name='chat_' + username + '_' + sender)
+
         PersonalMessage.objects.create(sender=sender, chat=p_chat, chat_name=chat_name, content=message)

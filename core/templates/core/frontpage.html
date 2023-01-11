@@ -32,10 +32,11 @@
 {% endcomment %}
     <div class="whitespace-normal text-lg text-black font-small mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm bg-white
                                         rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3 ">
-        <span class="bg-indigo-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">UPDATED</span>
+        <span class="bg-indigo-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">UPDATED4.0</span>
         <ul class="text-sm list-outside break-all no-underline">
-            <li>Time in messages!</li>
-            <li>Extra Spaces Prevented!</li>
+            <li>Fully functional Personal Chat!</li>
+            <li>Messenger functionality!</li>
+            <li>Sending messages time fixed!</li>
         </ul>
 
     </div>
@@ -45,6 +46,9 @@
             <li>
 {#                <div class="mt-4 py-4 px-4 mx-3 sm:mx-auto max-w-sm  bg-white rounded-xl shadow-lg space-y-2 py-4 flex items-center space-y-0 space-x-3">#}
                 <div class="py-4 px-2 mx-6 sm:mx-auto max-w-sm relative ">
+                {% if request.user.username == foo.user.username %}
+
+                {% else %}
 
 <div class="overflow-visible relative max-w-sm mx-auto bg-white shadow-lg ring-1 ring-black/5 rounded-xl flex items-center gap-6 dark:bg-slate-800 dark:highlight-white/5">
     <div class="absolute -left-5 w-24 h-24"><a href="{% url 'user_profile' foo.user.username %}"><img class=" w-24 h-24 shadow-lg rounded-full mx-auto mx-0 shrink-0 object-cover object-top" src="{{ foo.user.profile.profile_pic.url }}">
@@ -64,7 +68,10 @@
         <span class="text-slate-500 text-sm mt-1 font-medium dark:text-slate-400 break-all">{{ foo.user.email }}</span>
     </div>
   </div>
-
+                 {% endif %}
+      </li>
+        {% endfor %}
+    </ul>
                   {% comment %}  <img class="w-28 h-28 rounded-full mx-auto mx-0 shrink-0 object-cover object-top "
                          src="{{ foo.user.profile.profile_pic.url }}" alt="Woman's Face">
                     <div class="space-y-2 text-left ">
@@ -101,9 +108,7 @@
     <button class="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Message</button>
   </div>{% endcomment %}
 {#                        </div>#}
-            </li>
-        {% endfor %}
-    </ul>
+
 
     {#            {% for user in users_online %}#}
     {#                <h2 class="text-2xl lg:text-3xl text-white bg-slate-700 rounded p-3 mb-3">{{ user.user }}#}
