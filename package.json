@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "bootstrap-icons": "^1.10.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.4"
+  }
+}
