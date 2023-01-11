@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 
 
 class PersonalChat(models.Model):
-    chat_name = models.CharField(max_length=20, null=True, blank=True)
+    chat_name = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(unique=True)
     is_friend = models.BooleanField(default=True)
 
@@ -19,7 +19,7 @@ class PersonalMessage(models.Model):
     sender = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     chat = models.ForeignKey(PersonalChat, blank=True, null=True, on_delete=models.CASCADE,
                              related_name='personalmessages')
-    chat_name = models.CharField(max_length=20, null=True, blank=True)
+    chat_name = models.CharField(max_length=255, null=True, blank=True)
     content = models.CharField(max_length=255)
     added_date = models.DateTimeField(auto_now_add=True)
 

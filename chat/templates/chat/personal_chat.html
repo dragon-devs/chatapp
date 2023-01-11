@@ -22,7 +22,7 @@
                 </span>
                 </div>
             {% endif %}
-          <img class="w-14 h-14 rounded-full" src="{{ user.profile.profile_pic.url }}">
+          <img class="w-14 h-14 shadow-lg rounded-full mx-auto shrink-0 object-cover object-top" src="{{ user.profile.profile_pic.url }}">
 
             {% if user.profile.name %}
                 <strong class="text-slate-900 text-xs font-medium dark:text-slate-200">{{ user.profile.name }}</strong>
@@ -89,6 +89,7 @@
         {{ request.user.username|json_script:"json-message-username" }}
         {{ request.user.profile.name|json_script:'json-name' }}
         {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
+
         <script>
             const id = JSON.parse(document.getElementById('json-username').textContent);
             const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
