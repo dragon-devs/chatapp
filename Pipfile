@@ -12,6 +12,7 @@ mysqlclient = "*"
 channels-redis = "*"
 asgi-redis = "*"
 gunicorn = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 

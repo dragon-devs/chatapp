@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    {{ time_now|time:"h:i A"|json_script:"add_time" }}
+
 
                 {% endif %}
             {% endfor %}
@@ -81,7 +81,6 @@
         const userName = JSON.parse(document.getElementById('json-username').textContent);
         const Name = JSON.parse(document.getElementById('json-name').textContent);
         const ProfilePic = JSON.parse(document.getElementById('json-pic').textContent);
-        const Date = JSON.parse(document.getElementById('add_time').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -93,7 +92,7 @@
         chatSocket.onmessage = function (e) {
             console.log('onmessage')
             const data = JSON.parse(e.data);
-            console.log(data.date)
+
 
             if (data.message) {
                 if (data.username == '{{ request.user.username }}') {
@@ -153,7 +152,6 @@
                 'room': roomName,
                 'name': Name,
                 'pic': ProfilePic,
-                'date': Date,
             }));
             messageInputDom.value = '';
 

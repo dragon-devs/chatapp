@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ user }} |
+{% endblock %}
+
+{% block content %}
+    {% for user in users %}
+        <a href="{% url 'personal-chat' username=user.username %}"> {{ user.username }}</a>
+    {% endfor %}
+    <div class="lg:w-2/4 mx-6 lg:mx-auto p-4 mt-10 bg-white rounded-xl">
+        <div class="chat-messages space-y-3" id="chat-messages">
+            {% for message in chat_message %}
+                {% if message.user.username == request.user.username %}
+                    <div class="flex justify-end">
+                        <div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
+                            <p class="flex justify-end  text-white font-semibold text-sm text-xs">{{ message.user.profile.name }}</p>
+                            <p class="text-slate-100 mt-1 text-sm">{{ message.content }}</p>
+                            <p class="text-gray-200 text-sm text-xs mt-2 float-right">{{ message.date_added|time:"h:i A" }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex justify">
+
+                        <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top"
+                             src="{{ message.user.profile.profile_pic.url }}" alt="Not Found"></a>
+                        <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
+                            <div class="">
+                                {% if message.user.profile.name %}
+                                    <p class="font-semibold text-sm  text-slate-900 ">
+                                        {{ message.user.profile.name.capitalize }}
+                                    </p>
+                                {% else %}
+                                    <p class="font-semibold text-sm  text-slate-900 ">
+                                        {{ message.user.username.capitalize }}
+                                    </p>
+                                {% endif %}
+                                <div id="message_box">
+                                    <p class="text-slate-800 text-sm mt-1">{{ message.content }}</p>
+                                </div>
+                                <p class="text-slate-400 text-sm mt-2 text-xs float-right">{{ message.date_added|time:"h:i A" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
+        <form action="." method="post" class="flex">
+            {% csrf_token %}
+            <input type="text" name="content" class="flex-1 mr-3" placeholder="Your message..." id="chat-message-input"
+                   required>
+            <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="chat-message-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-send-fill" viewBox="0 0 16 16">
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                </svg>
+            </button>
+        </form>
+
+    </div>
+
+
+
+    {{ user.id|json_script:"json-username" }}
+    {{ request.user.username|json_script:"json-message-username" }}
+    <script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+    Chat |
+{% endblock %}
+
+{% block content %}
+        {% for user in users %}
+            <a href="{% url 'personal-chat' username=user.username %}">{{ user.username }}</a>
+        {% endfor %}
+
+
+{% endblock %}

@@ -12,7 +12,7 @@ from django.dispatch import receiver
 
 # @login_required()
 def frontpage(request):
-    user_objects = User.objects.all()
+    user_objects = User.objects.all().prefetch_related('profile')
     user_status = online_users.models.OnlineUserActivity.get_user_activities(timedelta(seconds=60))
     users_online = (user for user in user_status)
     context = {"online_users"}

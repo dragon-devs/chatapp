@@ -17,8 +17,6 @@ def rooms(request):
 @login_required
 def room(request, slugs):
     room = Room.objects.get(slug=slugs)
-    messages = Message.objects.filter(room=room).order_by('-id')[:100][::-1]
-    global now
-    now = datetime.now()
+    messages = Message.objects.filter(room=room).prefetch_related('user').order_by('-id')[:100][::-1]
 
-    return render(request, 'room/room.html', {'room': room, 'messages': messages, 'time_now': now})
+    return render(request, 'room/room.html', {'room': room, 'messages': messages})

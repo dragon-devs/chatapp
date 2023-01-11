@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -27,13 +28,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        now = datetime.now()
+
         data = json.loads(text_data)
         message = data['message']
         username = data['username']
         name = data['name']
         room = data['room']
         pic = data['pic']
-        date = data['date']
+
+        date = now.strftime("%I:%M %p")
 
         await self.save_message(username, room, message, name, pic, date)
 
@@ -59,7 +63,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         pic = event['pic']
         date = event['date']
 
-
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
@@ -70,9 +73,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         }))
 
-    @sync_to_async
+    @database_sync_to_async
     def save_message(self, username, room, message, name, pic, date):
         user = User.objects.get(username=username)
         room = Room.objects.get(slug=room)
 
-        Message.objects.create(user=user, room=room, content=message, )
+        Message.objects.create(user=user, room=room, content=message)
