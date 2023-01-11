@@ -83,13 +83,14 @@
 
     </div>
 
-    {{ user.id|json_script:"json-username" }}
-    {{ request.user.username|json_script:"json-message-username" }}
-    {{ request.user.profile.name|json_script:'json-name' }}
-    {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
-    {% block scripts %}
-        <script>
 
+    {% block scripts %}
+        {{ user.id|json_script:"json-username" }}
+        {{ request.user.username|json_script:"json-message-username" }}
+        {{ request.user.profile.name|json_script:'json-name' }}
+        {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
+
+        <script>
             const id = JSON.parse(document.getElementById('json-username').textContent);
             const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
             const Name = JSON.parse(document.getElementById('json-name').textContent);
