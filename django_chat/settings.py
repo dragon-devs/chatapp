@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3$l^tvmdbaj7l9#xk$*7(%%$3a^-%l4(sa_v@6(g3a^q!%=38l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ALLOWED_HOSTS = ['192.168.44.44']
 ALLOWED_HOSTS = ['172.105.24.233', '127.0.0.1']
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
