@@ -20,9 +20,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('rooms/', include('room.urls')),
-    path('admin/', admin.site.urls),
     path('chat/', include('chat.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
 ]
