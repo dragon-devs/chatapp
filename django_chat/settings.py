@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-3$l^tvmdbaj7l9#xk$*7(%%$3a^-%l4(sa_v@6(g3a^q!%=38l
 DEBUG = True
 
 # ALLOWED_HOSTS = ['192.168.44.44']
-ALLOWED_HOSTS = ['172.105.24.233', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.163', '127.0.0.1', 'localhost']
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/rooms/'
@@ -43,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'chat.apps.ChatConfig',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'online_users',
     'channels',
     'core',
@@ -51,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,30 +86,45 @@ TEMPLATES = [
 WSGI_APPLICATION = 'django_chat.wsgi.application'
 ASGI_APPLICATION = 'django_chat.asgi.application'
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",  # Use a unique identifier for multiple Django instances
+    }
+}
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
-    'ROUTING': 'ws.routing.application',
 }
+
+# Use the 'ROUTING' setting to point to your ASGI application
+# (assuming 'ws.routing' contains your routing configuration).
+# Replace 'ws.routing.application' with the actual path to your routing configuration.
+# For example: 'path.to.your.routing.application'.
+ROUTING = 'ws.routing.application'
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+#     'ROUTING': 'ws.routing.application',
+# }
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chatapp',
-        'USER': 'root',
-        'PASSWORD': 'Brucelee47',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -142,7 +156,6 @@ USE_TZ = True
 USE_I18N = True
 
 USE_L10N = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

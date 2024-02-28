@@ -18,5 +18,7 @@ def rooms(request):
 def room(request, slugs):
     room = Room.objects.get(slug=slugs)
     messages = Message.objects.filter(room=room).prefetch_related('user').order_by('-id')[:100][::-1]
+    room_images = RoomImages.objects.filter(room=room).prefetch_related('user').order_by('-id')[:100][::-1]
 
-    return render(request, 'room/room.html', {'room': room, 'messages': messages})
+    return render(request, 'room/room.html', {'room': room, 'messages': messages, 'room_images': room_images})
+

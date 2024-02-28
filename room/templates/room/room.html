@@ -12,12 +12,20 @@
 
     <div class="lg:w-2/4 mx-6 lg:mx-auto p-4 bg-white rounded-xl">
         <div class="chat-messages space-y-3" id="chat-messages">
+
             {% for message in messages %}
+
                 {% if message.user.username == request.user.username %}
                     <div class="flex justify-end">
                         <div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
                             <p class="flex justify-end  text-white font-semibold text-sm text-xs">{{ message.user.profile.name }}</p>
+
+                            {% if message.image_content %}
+                                <a href="{{ message.image_content.url }}" class=""><img class="w-48 h-48  flex mx-2 mt-auto shrink-0 object-cover object-top" src="{{ message.image_content.url }}" alt="Not Found"></a>
+                            {% else %}
                             <p class="text-slate-100 mt-1 text-sm">{{ message.content }}</p>
+                            {% endif %}
+
                             <p class="text-gray-200 text-sm text-xs mt-2 float-right">{{ message.date_added|time:"h:i A" }}</p>
                         </div>
                     </div>
@@ -38,22 +46,26 @@
                                     </p>
                                 {% endif %}
 
-                                <p class="text-slate-800 text-sm mt-1">{{ message.content }}</p>
+                                {% if message.image_content %}
+                                <a href="{{ message.image_content.url }}" class=""><img class="w-48 h-48  flex mx-2 mt-auto shrink-0 object-cover object-top" src="{{ message.image_content.url }}" alt="Not Found"></a>
+                                {% else %}
+                                <p class="text-slate-800 mt-1 text-sm">{{ message.content }}</p>
+                                {% endif %}
+
                                 <p class="text-slate-400 text-sm mt-2 text-xs float-right">{{ message.date_added|time:"h:i A" }}</p>
                             </div>
                         </div>
                     </div>
-
-
-
                 {% endif %}
             {% endfor %}
         </div>
     </div>
     <div class="lg:w-2/4 mt-6 mb-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
-        <form action="." method="post" class="flex">
+        <form action="." method="post" class="flex" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="text" name="content" class="flex-1 mr-3"  placeholder="Your message..." id="chat-message-input"   required>
+            <input type="text" name="content" class="flex-1 mr-3"  placeholder="Your message..." id="chat-message-input">
+{#                <label class="px-5 py-3 mx-2 rounded-xl text-white bg-slate-800 hover:bg-slate-800" id="preview" for="imageInput">IMG</label>#}
+            <input type="file" id="imageInput" name="imageInput" accept="image/*" hidden="true">
             <button class="px-5 py-3 rounded-xl text-white bg-slate-800 hover:bg-slate-800"  id="chat-message-submit" onclick=CheckSpace() >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-send-fill" viewBox="0 0 16 16">
@@ -71,15 +83,18 @@
     {{ request.user.profile.name|json_script:'json-name' }}
     {{ request.user.profile.profile_pic.url|json_script:'json-pic' }}
 
+
     <script>
         function CheckSpace() {
-            var input = document.getElementById("chat-message-input")
+            const input = document.getElementById("chat-message-input")
+
             input.addEventListener('input', function () {
                 if (input.onselectstart === 0 && this.code === 'Space') {
                     this.preventDefault()
                 }
             });
         }
+
         const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
         const userName = JSON.parse(document.getElementById('json-username').textContent);
         const Name = JSON.parse(document.getElementById('json-name').textContent);
@@ -95,7 +110,6 @@
         chatSocket.onmessage = function (e) {
             console.log('onmessage')
             const data = JSON.parse(e.data);
-
 
             if (data.message) {
                 if (data.username == '{{ request.user.username }}') {
@@ -122,7 +136,28 @@
 
                 }
             } else {
-                var msg = ''
+                if (data.username == '{{ request.user.username }}') {
+                    var msg = `<div class="flex justify-end"><div class="bg-blue-500 rounded-xl inline-block items-center gap-4 p-4 ">
+                    <p class=" flex justify-end text-white font-semibold text-xs "> ${data.name} </p>
+                    <img class="w-48 h-48  flex mx-2 mt-auto shrink-0 object-cover object-top" src="${data.image.name}" alt="Not Found">
+                    <p class="text-slate-200 mt-2 text-sm text-xs float-right "> ${data.date} </p>
+                    </div></div></div>`
+
+                } else {
+                    var msg = `<div class="flex justify">
+                        <a href="/user_profile/${data.username}" class="">
+                            <img class="w-8 h-8 rounded-full flex mx-2 mt-auto shrink-0 object-cover object-top" src="${data.pic}" alt="Not Found"></a>
+                        <div class=" bg-gray-200 rounded-xl flex items-center gap-4 p-4 inline-block">
+                            <div class="">
+                                <p class="font-semibold text-sm  text-slate-900 ">${data.name}</p>
+                                <img class="w-48 h-48  flex mx-2 mt-auto shrink-0 object-cover object-top" src="${data.image.name}" alt="Not Found">
+                                <p class="text-slate-400 text-sm mt-2 text-xs float-right"> ${data.date} </p>
+                            </div>
+                        </div>
+                    </div>`
+
+                }
+
             }
 
             document.querySelector('#chat-messages').innerHTML += msg;
@@ -146,16 +181,50 @@
 
         document.querySelector('#chat-message-submit').onclick = function (e) {
             e.preventDefault();
+            const imageInput = document.getElementById('imageInput');
+            const imageFile = imageInput.files[0];
+
+            if (imageFile) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                  const img = document.createElement('img');
+                  img.src = e.target.result;
+                  preview.innerHTML = '';
+                  preview.appendChild(img);
+                };
+
+                console.log(reader.readAsDataURL(imageFile))
+              }
+
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            scrollToRight()
-            chatSocket.send(JSON.stringify({
+
+            if (imageFile){
+                chatSocket.send(JSON.stringify({
+                'image': imageFile,
+                'username': userName,
+                'room': roomName,
+                'name': Name,
+                'pic': ProfilePic,
+
+            }));
+                console.log('image is in the input.')
+            }
+            else{
+                chatSocket.send(JSON.stringify({
                 'message': message,
                 'username': userName,
                 'room': roomName,
                 'name': Name,
                 'pic': ProfilePic,
+
             }));
+                console.log('normal message send.')
+            }
+
+            scrollToRight()
+
             messageInputDom.value = '';
 
             return false;
