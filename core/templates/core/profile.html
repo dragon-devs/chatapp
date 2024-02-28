@@ -11,9 +11,9 @@
     <form action="" enctype="multipart/form-data" method="post">
         {% csrf_token %}
 
-<figure class="rounded-xl p-8 bg-slate-800">
+    <figure class="rounded-xl p-8 bg-slate-800">
 
-    <label for="profile_pic"><img class="w-36 h-36 rounded-full mx-auto shrink-0 object-cover object-top bg-no-repeat bg-center mx-auto" src="{{ request.user.profile.profile_pic.url }}" alt=""></label>
+    <label id="preview" for="profile_pic"><img class="w-36 h-36 rounded-full mx-auto shrink-0 object-cover object-top bg-no-repeat bg-center mx-auto" src="{{ request.user.profile.profile_pic.url }}" alt=""></label>
     <input type="file" id="profile_pic" name="profile_pic" accept="image/*" hidden="true">
    {% comment %}
      <input type="file" class="block w-full text-sm text-slate-500
@@ -81,4 +81,30 @@
 
 
 
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+        const imageInput = document.getElementById('profile_pic');
+        const preview = document.getElementById('preview');
+
+        imageInput.addEventListener('change', (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              preview.innerHTML = '';
+              img.className = "w-36 h-36 rounded-full mx-auto shrink-0 object-cover object-top bg-no-repeat bg-center mx-auto";
+              preview.append(img);
+            };
+
+            reader.readAsDataURL(file);
+          }
+        });
+
+</script>
 {% endblock %}

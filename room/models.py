@@ -15,11 +15,28 @@ class Room(models.Model):
 class Message(models.Model):
     room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
+    image_content = models.ImageField(null=True, blank=True, upload_to='images/chatroom/')
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.user.profile.name + ':' + self.content)
+        if self.content:
+            return str(self.user.profile.name + ':' + self.content)
+        else:
+            return str(self.user.profile.name + ':' + 'images')
+
+    class Meta:
+        ordering = ('date_added',)
+
+
+class RoomImages(models.Model):
+    room = models.ForeignKey(Room, related_name='room_images', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='room_images', on_delete=models.CASCADE)
+    image_content = models.ImageField(upload_to='images/chatroom/')
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.user.profile.name + ':' + '_images')
 
     class Meta:
         ordering = ('date_added',)

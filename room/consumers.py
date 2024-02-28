@@ -27,19 +27,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    async def receive(self, text_data):
+    async def receive(self, text_data, bytes_data=None):
         now = datetime.now()
 
         data = json.loads(text_data)
-        message = data['message']
+        message = ''
+        for data_input in data:
+            if data_input == 'message':
+                message = data[data_input]
+                print(message)
+            elif data_input == 'image':
+                if bytes_data:
+                    message = self.scope['files']['image']  # Access the uploaded image file
+                    print(message)
+                    # Process the image file as needed (e.g., save it, perform image manipulation)
+
+                    # Send a response back to the client
+                    await self.send(text_data='Image uploaded successfully.')
+
+
         username = data['username']
         name = data['name']
         room = data['room']
         pic = data['pic']
-
         date = now.strftime("%I:%M %p")
 
-        await self.save_message(username, room, message, name, pic, date)
+
+        await self.save_message(username, room, message)
+
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -74,7 +89,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
     @database_sync_to_async
-    def save_message(self, username, room, message, name, pic, date):
+    def save_message(self, username, room, message):
         user = User.objects.get(username=username)
         room = Room.objects.get(slug=room)
 

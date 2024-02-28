@@ -14,7 +14,6 @@ def chat_view(request):
     active = list()
     for u in users_online:
         active.append(u.user.username)
-        print(u.user.username)
 
     return render(request, 'chat/personal_index.html', {'users': users, 'online_users': active})
 

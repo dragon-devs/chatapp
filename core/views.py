@@ -14,13 +14,12 @@ from .forms import *
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 
-
 @api_view()
 def mainpage(request):
     return Response('Okay')
 
 
-# @login_required()
+@login_required()
 def frontpage(request):
     user_objects = User.objects.all().prefetch_related('profile')
     user_status = online_users.models.OnlineUserActivity.get_user_activities(timedelta(seconds=60))
@@ -73,11 +72,11 @@ def home(request):
 
 def test(request):
     channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
+    notify = async_to_sync(channel_layer.group_send)(
         "notification_broadcast",
         {
             'type': 'send_notification',
             'message': json.dumps("Notification")
         }
     )
-    return HttpResponse("Done")
+    return HttpResponse(notify)

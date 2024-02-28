@@ -13,7 +13,11 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(models.Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['content', 'date_added', 'user', 'room']
+    list_display = ['content','image_content', 'date_added', 'user', 'room']
+
+@admin.register(models.RoomImages)
+class RoomImagesAdmin(admin.ModelAdmin):
+    list_display = ['image_content', 'date_added', 'user', 'room']
 
 
 @admin.register(models.Profile)
