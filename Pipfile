@@ -13,6 +13,7 @@ channels-redis = "*"
 asgi-redis = "*"
 gunicorn = "*"
 django-debug-toolbar = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
